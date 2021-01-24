@@ -95,7 +95,13 @@ func LoadConfig(filename string) (*Config, error) {
 		if url, ok := serv["url"]; ok {
 			git.URL = url.(string)
 		} else {
-			return nil, fmt.Errorf(errRequiredField, key)
+			if git.Type == "github" {
+				git.URL = "https://github.com"
+			} else if git.Type == "gitlab" {
+				git.URL = "https://gitlab.com/api/v4"
+			} else {
+				return nil, fmt.Errorf(errRequiredField, key)
+			}
 		}
 		if token, ok := serv["token"]; ok {
 			git.Token = token.(string)
